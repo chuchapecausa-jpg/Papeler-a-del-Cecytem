@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papeleria Escolar</title>
+<style>
+    *{
+        box-sizing: border-box;
+    }
+    body {
+        font-family: Arial, Helvetica, sans-serif;background: #eef3f8;
+        margin: 0;
+        padding: 20px;
+    }
+    .container {
+        max-width: 500px;
+        margin: auto;
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px
+        #0002;
+    }
+    header {
+        background: #29a51e;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        border-radius: 12px;
+    }
+    h1 {
+        margin: 0;
+    }
+    h2 {
+        color: #29a51e;
+    }
+    label {
+        display:block;
+        margin-top: 15px;
+        font-weight: bold;
+    }
+    input {
+        width: 100%;
+        padding: 12px;
+        margin-top: 7px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+    .checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .checkbox input {
+        width: auto;
+    }
+    button {
+        width: 100%;
+        padding: 13px;
+        margin-top: 20px;
+        border: none;
+        border-radius: 8px;
+        background: #29a51e;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+button:hover {
+    background: #29a51e;
+}
+
+.resultado {
+    background: #eef3f8;
+    padding: 18px;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.linea {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0;
+}
+
+.total {
+    background: #29a51e;
+    color: white;
+    padding: 18px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.total h2 {
+    color: white;
+    font-size: 28px;
+}
+
+.precios {
+    background: #f5f5f5;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.nota {
+    color: #666;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <h1>Papelería Escolar del Cecytem</h1>
+    <p>Sistema de cobro de copias</p>
+</header>
+
+<h2>Calculadora de copias</h2>
+
+<label>Copias a color:</label>
+<input type="number" id="color" min="0" value="0">
+
+<label>Copias blanco y negro:</label>
+<input type="number" id="bn" min="0" value="0">
+
+<div class="checkbox">
+    <input type="checkbox" id="alumno">
+    <label for="alumno">¿Es alumno?</label>
+</div>
+
+<div class="checkbox">
+    <input type="checkbox" id="credencial">
+    <label for="credencial">Presenta credencial escolar</label>
+</div>
+
+<button onclick="calcular()">Calcular cobro</button>
+
+<div class="resultado">
+
+    <h2>Resultado</h2>
+
+    <div class="linea">
+        <span>Total de copias:</span>
+        <strong id="cantidad">0</strong>
+    </div>
+
+    <div class="linea">
+        <span>Precio por copia a color:</span>
+        <strong id="precioColor">$0.00</strong>
+    </div>
+
+    <div class="linea">
+        <span>Precio por copia B/N:</span>
+        <strong id="precioBN">$0.00</strong>
+    </div>
+
+    <div class="linea">
+        <span>Subtotal:</span>
+        <strong id="subtotal">$0.00</strong>
+    </div>
+
+    <div class="linea">
+        <span>Descuento:</span>
+        <strong id="descuento">$0.00</strong>
+    </div>
+
+    <div class="total">
+        <p>TOTAL A PAGAR</p>
+        <h2 id="total">$0.00</h2>
+    </div>
+
+</div>
+
+<div class="precios">
+    <h2>Lista de precios</h2>
+
+    <p><strong>De 1 a 50 copias:</strong></p>
+    <p>Color: $1.50</p>
+    <p>Blanco y negro: $1.00</p>
+
+    <hr>
+
+    <p><strong>De 51 a 100 copias:</strong></p>
+    <p>Color: $1.30</p>
+    <p>Blanco y negro: $0.80</p>
+
+    <hr>
+
+    <p><strong>Más de 100 copias:</strong></p>
+    <p>Color: $1.00</p>
+    <p>Blanco y negro: $0.50</p>
+
+    <hr>
+
+    <p><strong>Descuento para alumnos:</strong> 25%</p>
+    <p>Se aplica presentando la credencial escolar.</p>
+</div>
+
+<button onclick="limpiar()">Nueva cotización</button>
+
+<p class="nota">
+    Papelería Escolar © 2026
+</p>
+
+</div>
+
+<script>
+
+function calcular() {
+
+    let color = Number(document.getElementById("color").value);
+    let bn = Number(document.getElementById("bn").value);
+
+    if (
+        !Number.isInteger(color) ||
+        !Number.isInteger(bn) ||
+        color < 0 ||
+        bn < 0
+    ) {
+        alert("Ingresa cantidades enteras válidas.");
+        return;
+    }
+
+    let cantidad = color + bn;
+
+    let precioColor = 0;
+    let precioBN = 0;
+
+    // Determinar precios según cantidad total
+
+    if (cantidad >= 1 && cantidad <= 50) {
+        precioColor = 1.50;
+        precioBN = 1.00;
+    }
+
+    else if (cantidad >= 51 && cantidad <= 100) {
+        precioColor = 1.30;
+        precioBN = 0.80;
+    }
+
+    else if (cantidad > 100) {
+        precioColor = 1.00;
+        precioBN = 0.50;
+    }
+
+    // Calcular subtotal
+
+    let subtotal =
+        (color * precioColor) +
+        (bn * precioBN);
+
+    // Verificar descuento escolar
+
+    let alumno = document.getElementById("alumno").checked;
+    let credencial = document.getElementById("credencial").checked;
+
+    let descuento = 0;
+
+    if (alumno && credencial) {
+        descuento = subtotal * 0.25;
+    }
+
+    let total = subtotal - descuento;
+
+    // Mostrar resultados
+
+    document.getElementById("cantidad").textContent = cantidad;
+
+    document.getElementById("precioColor").textContent =
+        "$" + precioColor.toFixed(2);
+
+    document.getElementById("precioBN").textContent =
+        "$" + precioBN.toFixed(2);
+
+    document.getElementById("subtotal").textContent =
+        "$" + subtotal.toFixed(2);
+
+    document.getElementById("descuento").textContent =
+        "$" + descuento.toFixed(2);
+
+    document.getElementById("total").textContent =
+        "$" + total.toFixed(2);
+}
+
+// Limpiar formulario
+
+function limpiar() {
+
+    document.getElementById("color").value = 0;
+    document.getElementById("bn").value = 0;
+
+    document.getElementById("alumno").checked = false;
+    document.getElementById("credencial").checked = false;
+
+    document.getElementById("cantidad").textContent = "0";
+    document.getElementById("precioColor").textContent = "$0.00";
+    document.getElementById("precioBN").textContent = "$0.00";
+    document.getElementById("subtotal").textContent = "$0.00";
+    document.getElementById("descuento").textContent = "$0.00";
+    document.getElementById("total").textContent = "$0.00";
+}
+
+</script>
+
+</body>
+</html>
